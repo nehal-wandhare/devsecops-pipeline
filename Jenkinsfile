@@ -10,7 +10,7 @@ pipeline {
     stage('Checkout') {
         steps {
             git branch: 'main',
-                url: 'https://gitlab.com/learndevopseasy/devsecops/springboot-build-pipeline.git'
+                url: 'https://gitlab.com/nehal-wandhare/springboot-build-pipeline.git'
         }
     }
 }
