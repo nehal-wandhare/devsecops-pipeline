@@ -16,11 +16,17 @@ pipeline {
     }
 
     stage('Stage I: Build') {
-      steps {
-        echo "Building Jar Component ..."
-        sh "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64; mvn clean package"
-      }
-    }
+  steps {
+    echo "Building Jar Component ..."
+
+    sh '''
+    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+    /usr/bin/mvn -version
+    /usr/bin/mvn clean package
+    '''
+  }
+}
 
     stage('Stage II: Code Coverage') {
       steps {
