@@ -1,4 +1,9 @@
 FROM eclipse-temurin:17-jdk-alpine
+
 WORKDIR /opt/app
-COPY target/wezvatech-demo-9739110917.jar app.jar
+
+COPY target/*.jar app.jar
+
+EXPOSE 8080
+
 ENTRYPOINT ["java","-jar","app.jar"]
