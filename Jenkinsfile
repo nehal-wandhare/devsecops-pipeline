@@ -30,14 +30,14 @@ pipeline {
     }
 
     stage('Build') {
-      steps {
-        echo "Building Jar Component ..."
-        sh '''
-        mvn -version
-        mvn clean package
-        '''
-      }
-    }
+  steps {
+    echo "Building Jar Component ..."
+    sh '''
+    mvn -version
+    mvn clean package -DskipTests
+    '''
+  }
+}
 
     stage('Code Coverage') {
       steps {
