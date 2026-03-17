@@ -2,7 +2,7 @@ pipeline {
   agent { label 'build' }
 
   environment {
-    registry = "nehal-wandhare/democicd"
+    registry = "nehalwandhare/democicd"
     registryCredential = 'dockerhub'
     JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
     PATH = "/usr/lib/jvm/java-17-openjdk-amd64/bin:/usr/bin:/usr/local/bin:/bin"
@@ -94,14 +94,14 @@ pipeline {
 
     stage('Scan Image') {
       steps {
-        sh "trivy image --scanners vuln nehal-wandhare/democicd:latest > trivyresults.txt"
+        sh "trivy image --scanners vuln nehalwandhare/democicd:latest > trivyresults.txt"
       }
     }
 
     stage('Smoke Test') {
       steps {
         sh '''
-        docker run -d --name smokerun -p 8080:8080 nehal-wandhare/democicd
+        docker run -d --name smokerun -p 8080:8080 nehalwandhare/democicd
         sleep 60
         ./check.sh
         docker rm -f smokerun
