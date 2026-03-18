@@ -1,4 +1,9 @@
-name: DevSecOps Pipeline
+name: Full DevSecOps CI-CD Pipeline
+
+# 🔐 Required for triggering CD repo
+permissions:
+  contents: read
+  actions: write
 
 on:
   push:
@@ -12,11 +17,11 @@ jobs:
       REGISTRY: nehalwandhare/democicd
 
     steps:
-      # ✅ Checkout (GitHub repo directly)
+      # 🔹 Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 🔹 Debug Env
+      # 🔹 Debug
       - name: Debug Environment
         run: |
           echo "USER: $(whoami)"
@@ -34,14 +39,13 @@ jobs:
       # 🔹 Build
       - name: Build
         run: |
-          mvn -version
           mvn clean package -DskipTests
 
       # 🔹 Code Coverage
       - name: Code Coverage
         run: mvn jacoco:report
 
-      # 🔹 SCA (Dependency Check)
+      # 🔹 SCA
       - name: Dependency Check
         run: mvn org.owasp:dependency-check-maven:check -DfailOnError=false
 
@@ -71,13 +75,13 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      # 🔹 Build & Push Docker Image
+      # 🔹 Build & Push Image
       - name: Build Docker Image
         run: |
           docker build -t $REGISTRY:latest .
           docker push $REGISTRY:latest
 
-      # 🔹 Scan Image (Trivy)
+      # 🔹 Scan Image
       - name: Scan Docker Image
         uses: aquasecurity/trivy-action@master
         with:
@@ -91,3 +95,12 @@ jobs:
           chmod +x check.sh
           ./check.sh
           docker rm -f smokerun
+
+      # 🔥 Trigger CD Pipeline
+      - name: Trigger CD Pipeline
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/nehal-wandhare/devsecops-cd-pipeline/actions/workflows/deploy.yml/dispatches \
+          -d '{"ref":"main","inputs":{"IMAGETAG":"latest"}}'
